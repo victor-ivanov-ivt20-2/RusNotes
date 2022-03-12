@@ -5,6 +5,7 @@ import Schedule from './components/Schedule.vue'
 </script>
 
 <template>
+<!-- Шапка сайта -->
   <header class="header">
     <div class="container">
       <div class="header__inner">
@@ -62,7 +63,7 @@ header {
   height: 50px;
 }
 .container {
-  max-width: 1170px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 0;
 }
