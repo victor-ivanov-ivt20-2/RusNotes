@@ -63,7 +63,7 @@ header {
   height: 50px;
 }
 .container {
-  max-width: 1200px;
+  max-width: 1370px;
   margin: 0 auto;
   padding: 0;
 }
