@@ -1,7 +1,40 @@
-// Это расписание занятий
+<template>
+    <!-- двоеточие - это bind в vuejs. -->
+    <table :style="styleObjects">
+        <thead>
+            <tr class="tr__head">
+                <th scope="col" class="th__head" v-for="n in 7" :key="n">
+                    {{ week[n-1] }}
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="n in 6" :key="n" >
+                <td scope="row" class="td__time__body">
+                    {{ time[n-1] }}
+                </td>
+                <td v-for="i in 6" :key="i" class="td__input__body">
+                    <!-- этот div, как input. Аттрибут @input заполняет двумерный массив -->
+                    <div class="textBox" contenteditable="true" 
+                    @input="input__body[n-1][i-1] = $event.currentTarget.textContent">
+                        {{ input__body[n-1][i-1] }}
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="inputs">
+        <input id="table_width" type="text" placeholder="ширина таблицы" 
+        :value="styleObjects.width" @input="styleObjects.width = $event.target.value">
+        <input id="table_height" type="text" placeholder="высота таблицы" 
+        :value="styleObjects.height" @input="styleObjects.height = $event.target.value">
+    </div>
+</template>
+
 <script >
 
 export default {
+    name: 'schedule-main',
     data() {
         return {
             week: [
@@ -46,39 +79,6 @@ export default {
     }   
 }
 </script>
-
-<template>
-    <!-- двоеточие - это bind в vuejs. -->
-    <table :style="styleObjects">
-        <thead>
-            <tr class="tr__head">
-                <th scope="col" class="th__head" v-for="n in 7" :key="n">
-                    {{ week[n-1] }}
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="n in 6" :key="n" >
-                <td scope="row" class="td__time__body">
-                    {{ time[n-1] }}
-                </td>
-                <td v-for="i in 6" :key="i" class="td__input__body">
-                    <!-- этот div, как input. Аттрибут @input заполняет двумерный массив -->
-                    <div class="textBox" contenteditable="true" 
-                    @input="input__body[n-1][i-1] = $event.currentTarget.textContent">
-                        {{ input__body[n-1][i-1] }}
-                    </div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <div class="inputs">
-        <input id="table_width" type="text" placeholder="ширина таблицы" 
-        :value="styleObjects.width" @input="styleObjects.width = $event.target.value">
-        <input id="table_height" type="text" placeholder="высота таблицы" 
-        :value="styleObjects.height" @input="styleObjects.height = $event.target.value">
-    </div>
-</template>
 
 <style scoped>
 .inputs {
