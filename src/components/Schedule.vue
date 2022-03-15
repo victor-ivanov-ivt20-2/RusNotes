@@ -20,82 +20,106 @@ export default {
                 '14:00 - 15:35',
                 '15:50 - 17:25',
                 '17:40 - 19:15'
+            ],
+            styleObjects: {
+                width: "100%",
+                height: "500px"
+            },
+            input__body: [
+                ["","","Теория вероятностей и математическая статистика","","",""],
+                ["Философия**","Структуры и алгоритмы обработки данных","Физкультура","","","Физкультура"],
+                ["","Языки программирования и методы трансляции","","","","Базы данных"],
+                ["Объектно-ориентированное программирование","Риторика","","","Философия","Объектно-ориентированное программирование "],
+                ["","Структуры и алгоритмы обработки данных","","","Объектно-ориентированное программирование** Языки программирования и методы трансляции*","Базы данных"],
+                ["Безопасность жизнедеятельности","","Безопасность жизнедеятельности**","","Объектно-ориентированное программирование** Языки программирования и методы трансляции*",""]
             ]
         }
-    }
-    
+    },
+    methods: {
+        coolstyle() {
+            this.styleObjects.width = document.getElementById("table_width").value;
+            this.styleObjects.height = document.getElementById("table_height").value;
+        }
+    },
+    mounted() {
+        this.coolstyle();
+    }   
 }
-
 </script>
 
 <template>
-
-    <table>
+    <!-- двоеточие - это bind в vuejs. -->
+    <table :style="styleObjects">
         <thead>
             <tr class="tr__head">
-                <th v-for="n in 7" :key="n">
+                <th scope="col" class="th__head" v-for="n in 7" :key="n">
                     {{ week[n-1] }}
                 </th>
             </tr>
         </thead>
         <tbody>
-            <td>
-                <div>
-                    <tr v-for="n in 6" :key="n" class="tr__time__body">
-                        {{ time[n-1] }}
-                    </tr>
-                </div>
-                
-            </td>
-            <td v-for="n in 6" :key="n" >
-                <tr v-for="i in 6" :key="i" class="tr__input__body">
-
-                    <div class="textBox">
-                        <input type="text" />
+            <tr v-for="n in 6" :key="n" >
+                <td scope="row" class="td__time__body">
+                    {{ time[n-1] }}
+                </td>
+                <td v-for="i in 6" :key="i" class="td__input__body">
+                    <!-- этот div, как input. Аттрибут @input заполняет двумерный массив -->
+                    <div class="textBox" contenteditable="true" 
+                    @input="input__body[n-1][i-1] = $event.currentTarget.textContent">
+                        {{ input__body[n-1][i-1] }}
                     </div>
-                </tr>
-            </td>
+                </td>
+            </tr>
         </tbody>
     </table>
-    
-
+    <div class="inputs">
+        <input id="table_width" type="text" placeholder="ширина таблицы" 
+        :value="styleObjects.width" @input="styleObjects.width = $event.target.value">
+        <input id="table_height" type="text" placeholder="высота таблицы" 
+        :value="styleObjects.height" @input="styleObjects.height = $event.target.value">
+    </div>
 </template>
 
 <style scoped>
-.tr__head {
-    height: 70px;
+.inputs {
+    margin: 50px;
+    display: flex;
+    justify-content: space-around;
 }
-.tr__time__body, .tr__input__body {
-    height: 70px;
+.th__head {
+    background-color: rgb(39, 39, 39);
+    padding: 10px;
+}
+.td__time__body, .td__input__body {
+    padding: 10px;
     text-align: left;
 }
-.textBox {
-    background: transparent; 
-    border: 1px solid;
-    border-color: #666 #aaa #aaa #666;
-    margin: auto;
-    height: 50px;
+.td__input__body {
+    font-size: 14px;
 }
-.textBox input {
-    background: transparent;
-    border: none;
-    height: 100%;
+.td__time__body {
+    background-color: rgb(39, 39, 39);
 }
 table {
-  table-layout: fixed;
-  width: 100%;
-  border-spacing: 0px;
-  border-collapse: collapse;
-  border: 1px solid white;
+    table-layout: fixed;
+    border-spacing: 0px;
+    border-collapse: collapse;
+    border: 1px solid white;
 } 
 td {
     border: 1px solid white;
-    padding: 0;
 }
-input[type="text"] {
-    padding: 5px;
+#table_width, #table_height {
     background-color: rgb(39, 39, 39);
+    outline: none;
+    border: none;
+    color: white;
+}
+.textBox {
+    background: transparent;
+    padding: 5px;
     color: white;
     border: none;
+    outline: none;
 }
 </style>
