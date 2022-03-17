@@ -8,7 +8,9 @@ const someItemSchema = new Schema({
     date: {
         type: Date,
         default: Date.now
-    }
+    },
+    ij: [Number],
+    oe: Number
 })
 
 const someItem = model('someitem', someItemSchema);

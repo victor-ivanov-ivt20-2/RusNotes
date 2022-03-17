@@ -1,28 +1,45 @@
 <template>
     <!-- двоеточие - это bind в vuejs. -->
-    <table :style="styleObjects">
-        <thead>
-            <tr class="tr__head">
-                <th scope="col" class="th__head" v-for="n in 7" :key="n">
-                    {{ week[n-1] }}
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="n in 6" :key="n" >
-                <td scope="row" class="td__time__body">
-                    {{ time[n-1] }}
-                </td>
-                <td v-for="i in 6" :key="i" class="td__input__body">
-                    
-                    <div class="textBox" contenteditable="true" 
-                    @input="input__body[n-1][i-1] = $event.currentTarget.textContent">
-                        {{ input__body[n-1][i-1] }}
-                    </div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+
+    <div>
+        <div class="">
+            <div class="odd_even">
+                <p v-if="take_res">нечётная неделя</p>
+                <p v-else>чётная неделя</p>
+            </div>
+        </div>
+        {{ input__body[0][0] }}
+        
+        <table class="table is-bordered is-hoverable" :style="styleObjects">
+            <thead>
+                <tr class="tr__head">
+                    <th scope="col" class="th__head" v-for="n in 7" :key="n">
+                        {{ week[n-1] }}
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="n in 6" :key="n" >
+                    <td scope="row" class="td__time__body">
+                        {{ time[n-1] }}
+                    </td>
+                    <td v-for="i in 6" :key="i" class="td__input__body">
+                        
+                        <div>
+                            {{ input__body[n-1][i-1] }}
+                        </div>
+                        <!-- <div class="textBox" contenteditable="true"
+                            @input="input__body[n-1][i-1] = $event.currentTarget.textContent">
+                            {{ input__body[n-1][i-1] }}
+                        </div> -->
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    
+
     <!-- <div class="inputs">
         <input id="table_width" type="text" placeholder="ширина таблицы" 
         :value="styleObjects.width" @input="styleObjects.width = $event.target.value">
@@ -32,8 +49,9 @@
 </template>
 
 <script >
-
+import axios from "axios";
 export default {
+    
     name: 'schedule-main',
     data() {
         return {
@@ -59,53 +77,79 @@ export default {
                 height: "500px"
             },
             input__body: [
-                ["","","Теория вероятностей и математическая статистика","","",""],
-                ["Философия**","Структуры и алгоритмы обработки данных","Физкультура","","","Физкультура"],
-                ["","Языки программирования и методы трансляции","","","","Базы данных"],
-                ["Объектно-ориентированное программирование","Риторика","","","Философия","Объектно-ориентированное программирование "],
-                ["","Структуры и алгоритмы обработки данных","","","Объектно-ориентированное программирование** Языки программирования и методы трансляции*","Базы данных"],
-                ["Безопасность жизнедеятельности","","Безопасность жизнедеятельности**","","Объектно-ориентированное программирование** Языки программирования и методы трансляции*",""]
-            ]
+                ["","","","","",""],
+                ["","","","","",""],
+                ["","","","","",""],
+                ["","","","","",""],
+                ["","","","","",""],
+                ["","","","","",""]
+            ],
+            date: 0,
+            items: []
+        }
+    },
+    computed: {
+        take_res() {
+            return this.take_today()
         }
     },
     methods: {
         coolstyle() {
             this.styleObjects.width = document.getElementById("table_width").value;
             this.styleObjects.height = document.getElementById("table_height").value;
+        },
+        take_today() {
+            const birthday = new Date(2022, 0, 24);
+            this.date = Math.round(((Date.now() - birthday.getTime())-(1000*60*60*12))/(1000*60*60*24))/14;
+            if (this.date - Math.floor(this.date) >= 0.5 ) return true;
+            return false;
+        }
+    },
+    async mounted() {
+        const response = await axios.get('api/someItems/')
+        this.items = response.data;
+        let size = response.data.length
+        for(let i = 0; i < size; i++) {
+            if (this.take_res) {
+                if (this.items[i].oe < 2) 
+                this.input__body[this.items[i].ij[0]][this.items[i].ij[1]] = this.items[i].description;
+            } else {
+                if (this.items[i].oe != 1)
+                this.input__body[this.items[i].ij[0]][this.items[i].ij[1]] = this.items[i].description;
+            }
+            
         }
     }   
 }
 </script>
 
 <style scoped>
-.inputs {
-    margin: 50px;
-    display: flex;
-    justify-content: space-around;
+.odd_even {
+    margin-left: 50px;
+    margin-top: 13px;
+    margin-bottom: 13px;
+}
+.table th:not([align]){
+    text-align: center;
 }
 .th__head {
-    background-color: rgb(175, 230, 255);
     padding: 10px;
+    
 }
 .td__time__body, .td__input__body {
     padding: 10px;
-    text-align: left;
+    text-align: center;
 }
 .td__input__body {
     font-size: 14px;
-}
-.td__time__body {
-    background-color: rgb(175, 230, 255);
+    text-align: left;
+    outline: none;
 }
 table {
     table-layout: fixed;
     border-spacing: 0px;
     border-collapse: collapse;
-    border: 1px solid rgb(0, 0, 0);
 } 
-td {
-    border: 1px solid rgb(0, 0, 0);
-}
 #table_width, #table_height {
     background-color: rgb(39, 39, 39);
     outline: none;
@@ -114,9 +158,10 @@ td {
 }
 .textBox {
     background: transparent;
-    padding: 5px;
     color: rgb(0, 0, 0);
     border: none;
     outline: none;
+    width: 100%;
+    height: 100%;
 }
 </style>

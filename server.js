@@ -6,7 +6,7 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const { PORT, mongoUri } = require('./config');
 const someItemsRoutes = require('./routes/api/someItems');
-
+//$env:MONGO_URI='mongodb+srv://admin:Oq42jOf3a2ZLKZg8@cluster0.pvcbu.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
 
 app.use(cors());
 app.use(morgan('tiny'));
